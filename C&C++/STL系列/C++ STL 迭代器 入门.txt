@@ -1,0 +1,307 @@
+利用C++标准模板库（STL）中的 【堆栈】 和 【队列】 来编程实现某些功能。
+#include <string>
+#include <stack>
+#include <queue>
+using namespace std;
+class ExpressionType{
+public:
+ExpressionType();
+//…
+};
+文件中包含了三个头文件<string>、<stack>和<queue>，这是标准模板库里现成的东西，直接拿来用就行了，不必再自己写栈和队列， 它们都在std 命名空间里。
+
+迭代，是一个数学概念。 
+
+那我来讲讲吧。
+
+一个男人和一个女人，繁衍后代，生了一个儿子。
+这个儿子和一个女人，繁衍后代，生了一个儿子，就是之前那个男人的孙子。
+这个儿子和一个女人，繁衍后代，生了一个儿子，就是之前（第一行）那个男人的曾孙。
+
+繁衍后代，就是一个自然界中最普遍的迭代过程。
+
+重复“繁衍后代”的行为，就是重复“迭代”的过程。
+
+迭代器，是一个封装好了，用来重复“迭代”过程的一段程序。
+
+各个语言，都可以实现迭代器。
+
+C++ STL里的迭代器的相关知识，不妨结合list模板类来学习。
+
+list<string> MyFriends;
+这就定义了一个名为MyFriends的list模板类实例。
+
+类和实例的关系，你懂的吧？ 
+
+从哲学上说，类是一个抽象概念的集合，而“实例”是抽象概念的具体化。 
+
+好了，我们有了一个MyFriends的list类实例， 
+
+现在，我们要往你朋友名单里放东西了。 
+
+怎么放？ 
+
+既然有了一个类的实例，要在里面操作，比如放东西、抛弃东西，就应该调用函数了。 
+
+这种函数，也叫method（方法）。 
+
+MyFriends这个实例，可以有哪些“方法”，你就得去查阅这个模板类的说明书。 
+
+好，看了，你会知道： 
+
+list模板类，有这么两个方法： 
+
+push_back和push_front。 
+
+顾名思义 
+
+push_back，将新东西放到当前对象的后面；
+push_front，将新东西放到当前对象的 前 面。 
+
+这里的“当前对象”是指list类实例。 
+
+好了，开始加朋友。 
+
+MyFriends.push_back("虫虫");
+MyFriends.push_back("酱油帝");
+MyFriends.push_front("张无忌");
+MyFriends.push_front("西墙");
+ 
+顺序是怎么样的呢？别急，我们最后可以验证一下。 
+
+朋友都放进去了，现在开始点名！ 
+
+这时候，我们要发明一个“点名器”对不对？ 
+
+“点名器”的原理是： 
+
+你指到哪个人头上，那个人就要报出自己的名字。 
+
+这种“指哪报哪”的过程，是不是一个重复的过程，对不？ 
+
+所以，“点名器”就是一种“迭代器”。 
+
+好了，迭代器上场。 
+
+C++ STL为你早已预备好了“迭代器”这个模板类。 
+
+就等你拿着这个模板类的抽象概念生成出一个“点名器”的实例来了， 
+
+怎么生成？ 
+
+用这个语句： 
+
+list<string>::iterator MyFriendsCallHisName;
+ 
+“iterator”就是迭代器。 
+
+MyFriendsCallHisName 是这个迭代器的名字，随便你取。 
+
+也可以写
+list<string>::iterator BaoMingZi;
+ 
+之所以起名为“MyFriendsCallHisName”，是突出它与list对象“MyFriends”的关系。 
+
+好了，开始点名。 
+
+刚才说了，点名过程是一个重复过程，我们且用C里面最基本的重复功能来做，是啥？ 
+
+是啥？ 
+
+—— 答：for 
+
+对！ 
+
+来吧。 
+
+for一个玩玩。 
+
+for (初始值; 条件; 继续做什么)
+ { 
+   报出名字
+  }
+
+for (..;..;..){ 这个里面的过程将调用某些函数}  
+
+但是，别急， 
+
+for (初始值; 条件; 继续做什么)
+这一块的问题，还没有解决呢。 
+
+初始值 是啥？ 
+
+条件 是啥？ 
+
+继续做什么 是啥？
+
+—— 答：for（int i=1；i<=100;i++）
+
+这是没有迭代器之前的土做法， 
+
+这样的“土做法”有许多问题： 
+
+你怎么知道条件是“<=100”，100哪里来的？ 
+
+准确地说，有了迭代器，你根本就不应该去关心，这个条件里的数值具体是多少了。 
+
+—— 答：只有四个名。只需要重复4次吧 
+
+问题是，名单随时会变动，你不能自个儿去数吧。 
+
+那么，迭代器的优势，就显露出来了。 
+
+好，咱们逐个儿来。
+
+初始值
+
+注意，“for（int i=1；i<=100;i++）”
+里面的“int i”这个东西，其实跟名单本身根本没啥关系，是我们额外设计的一个数字，对不？
+
+—— 答：恩嗯，我迫不及待想知道你怎么用?
+
+你不能急，我要把为什么用迭代器的理由说透，否则干嘛用它，用它不成了“脱裤子放屁”了。
+
+请你一定理解这句话：
+
+里面的“int i”这个东西，其实跟名单本身根本没啥关系，是我们额外设计的一个数字，对不？
+
+关键是这个数字跟朋友名单本身毫无关系。 
+
+迭代器的思想就是：针对朋友名单本身！ 
+
+朋友名单本身是啥，是“MyFriends”这个东西。
+
+而这个东西又是list模板类的一个实例。
+
+操作实例，就要用这个实例所属于的类的方法，也叫“成员函数”。
+
+下面，有新的“成员函数”登场 —— 这些你都得去查类的说明书。
+
+MyFriends.begin()
+
+这个“begin()”方法，把MyFriends里的第一个东西“交出来”。
+
+交给谁？ 
+
+交给迭代器。 
+
+也就是：
+
+MyFriendsCallHisName = MyFriends.begin(); 
+
+这个语句，就体现了某个list对象与它的迭代器之间的关系。 
+
+而且，更重要的是，这个语句，将成为“for”的初始值。
+
+也就是说，“for”的初始值，不再是一个我们额外增加的数字，而是跟我们要操作的对象紧密相连的迭代器。 
+
+这只是初始值， 
+
+条件， 
+
+既然初始值是迭代器，那么，条件也应该跟迭代器有关。 
+
+我们要从头到尾来报名， 
+
+初始值是头一个朋友。 
+
+那么，结束就应该是最后一个朋友。 
+
+所以，我们不妨，把条件设为“MyFriendsCallHisName != MyFriends.end();”
+
+—— 提问：等下 …… MyFriendsCallHisName != MyFriends.end(); 是说不等于最后一个成员。这样不是点不到了吗？初始值为第一个，条件为不等于最后一个。
+
+别着急呀，包你能用！ 
+
+为什么能用？ 
+
+关键看最后一个“继续做什么”。 
+
+这就涉及到一个编程技巧罗。
+
+我们通常喜欢“i++”，C里面还有“++i”呢。
+
+所以，你原来“土办法”里的“i++”，
+
+应该换成跟迭代器有关的： 
+
+++MyFriendsCallHisName 
+
+好了for（。；。；。）搞好了： 
+
+for (
+        MyFriendsCallHisName = MyFriends.begin();
+        MyFriendsCallHisName != MyFriends.end();
+        ++MyFriendsCallHisName
+)
+
+那么for()后面的大括号里面怎么搞，必须谨记：始终要跟迭代器有关系！
+
+我们不妨用“流”来输出名字 
+
+也就是 cout << …… << endl; 
+
+关键是中间这个“……”的内容是啥呢？ 
+
+必须谨记：始终要跟迭代器有关系！
+
+这就用到C/C++的老重点了 —— 指针或引用。 
+
+通过我们刚才的例子，我们隐约地感觉到，MyFriendsCallHisName的值 
+
+好像跟list里面各个对象的指针或引用有关。 
+
+所以，“……”的内容应该是：
+
+*MyFriendsCallHisName 
+
+—— 提问：指向MyFriendsCallHisName的地址，是吗？
+
+“*”是取地址吗？搞反了吧。 
+
+“&”是取地址。 
+
+“*”则是反过来，按地址拿内容。 
+
+也就是说，MyFriendsCallHisName这个变量的值，其实是一个地址。 
+
+说白了，迭代器就是一指针。 
+
+但是，我若一开始就说“迭代器就是一指针”，肯定会吓坏许多人，指针？哇……难……
+
+迭代器的本质，就是一个指针。
+
+是一种有着特殊用途的指针。
+
+好了，咱们把整个程序代码完整地打出来：
+
+#include <iostream>
+#include <string>
+#include <list>
+
+using namespace std;
+
+int main (int argc, char *argv[]){
+list<string> MyFriends;
+list<string>::iterator MyFriendsCallHisName;
+#
+  MyFriends.push_back("虫虫");
+  MyFriends.push_back("酱油皇");
+  MyFriends.push_front("张无忌");
+  MyFriends.push_front("西墙");
+ #
+  // print the MyFriends
+  for (MyFriendsCallHisName=MyFriends.begin();
+		 MyFriendsCallHisName!=MyFriends.end();
+		  ++MyFriendsCallHisName) {
+	// dereference the iterator to get the element
+	cout << *MyFriendsCallHisName << endl;
+  }
+  system("pause");
+  
+  return 0;
+}
+
+你在你的C++编译器上跑一遍吧 
+
+顺便看看list对象里的成员是怎么排列的。 
